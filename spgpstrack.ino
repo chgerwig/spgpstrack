@@ -9,6 +9,7 @@
  *      TXspeedLOW - Maximum speed for low speed mode
  *      TXdistHIGH - Transmit Interval distance in high speed mode
  *      TXspeedLOW - Minimum speed for high speed mode
+ *      keepAlive - number of seconds for keep alive sending, even if tracker does not move
  *      SF - Define The LoRaWAN Spreading Factor (DR_SF7 - DR_SF12) 7 and 8 recommended for Mapping
  *      CONFIRMED - enables Confirmed uplinks, ONLY Enable, if you conncect a Buzzer to Pin D5! Otherwise this Feature is useless
  *      SOFT_SERIAL - Uncomment to use Hardware Serial, Otherwise Software Serial is used. In that case connect the GPS Module to RXpin and TXpin
@@ -54,6 +55,10 @@
 #define TXdistHIGH 250
 // min speed for high speed mode; in km/h
 #define TXspeedHIGH 80
+
+/* keep alive timer in seconds */
+#define keepAlive // comment out if not wanted
+#define keepAliveTimer 60
 
 /* Define Region */
 #define CFG_eu868
@@ -144,7 +149,6 @@ CayenneLPP lpp(20);
 #else
 uint8_t txBuffer[9];
 #endif
-
 
 // ABP:
 
@@ -430,6 +434,12 @@ void setup() {
 
     // Set data rate and transmit power for uplink (note: txpow seems to be ignored by the library)
     LMIC_setDrTxpow(SF,14);
+  
+    // set timer to actual millis + keepAlive value if activated
+    #ifdef keepAlive
+        unsigned long timer = millis() + keepAliveTimer * 1000;
+    #endif
+  
     println("Setup OK");
 }
 
@@ -470,6 +480,7 @@ void loop() {
         //println( "Course: " + String(lastTxCourse));
 
         // If Distance to last TX Point is bigger than the TXdistance Prepare and Trigger Data Transmission
+        // or if the keepAlive timer is reached
         bool transmit = false;
         #ifndef TXspeedModes
           transmit = lastTxDist > TXdist; // No speed modes, Default TX distance
@@ -479,6 +490,13 @@ void loop() {
          ( (gps.speed.kmph() >= TXspeedHIGH ) && (lastTxDist > TXdistHIGH) ) || //High speed mode chek
         (lastTxDist > TXdist); // Default TX distance
         #endif 
+        // check keepAlive timer
+        #ifdef keepAlive  
+          if (timer < millis()){
+            timer = millis() + keepAliveTimer * 1000; // set new timer value
+            transmit = true;
+          }
+        #endif
         if( transmit ){
          #ifdef DOUBLE_SEND
           doDouble!=doDouble;
