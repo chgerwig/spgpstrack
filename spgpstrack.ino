@@ -214,6 +214,9 @@ const lmic_pinmap lmic_pins = {
 
 #endif
 
+#ifdef keepAlive
+     unsigned long timer = millis() + keepAliveTimer * 1000;
+#endif
 
 void onEvent (ev_t ev) {
     print(String(os_getTime()));
@@ -435,10 +438,7 @@ void setup() {
     // Set data rate and transmit power for uplink (note: txpow seems to be ignored by the library)
     LMIC_setDrTxpow(SF,14);
   
-    // set timer to actual millis + keepAlive value if activated
-    #ifdef keepAlive
-        unsigned long timer = millis() + keepAliveTimer * 1000;
-    #endif
+    // set timer to actual millis + keepAlive value if activate
   
     println("Setup OK");
 }
