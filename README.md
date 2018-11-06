@@ -10,7 +10,7 @@ It is developed for Arduino Uno with Dragino Lora/GPS Shield and for ESP32 TTGO 
   - In case of Hardware Serial usage you can enable a Software Serial for debugging
   - Adding keep alive timer option
  ## To Do
-  - Timed transmission, which also executes when the tracker is not moving. For example every hour, to see if the tracker is still alive.
+  - <~~Timed transmission, which also executes when the tracker is not moving. For example every hour, to see if the tracker is still alive.~~
   - low power option
   - ~~ESP32 support [State: in work, see branch develop. The SPI Config produces backtraces] Hardware: ESP32 Uno, branded as Wemos~~ ESP32 already implemented fot TTGO T-Beam
   - Alternative WiFi Position for ESP32
