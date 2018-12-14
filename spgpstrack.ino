@@ -58,7 +58,7 @@
 
 /* keep alive timer in seconds */
 #define keepAlive // comment out if not wanted
-#define keepAliveTimer 60
+#define keepAliveIntervall 60
 
 /* Define Region */
 #define CFG_eu868
@@ -215,7 +215,7 @@ const lmic_pinmap lmic_pins = {
 #endif
 
 #ifdef keepAlive
-     unsigned long timer = millis() + keepAliveTimer * 1000;
+     unsigned long keepAliveTimer = millis() + keepAliveInervall * 1000;
 #endif
 
 void onEvent (ev_t ev) {
@@ -492,8 +492,8 @@ void loop() {
         #endif 
         // check keepAlive timer
         #ifdef keepAlive  
-          if (timer < millis()){
-            timer = millis() + keepAliveTimer * 1000; // set new timer value
+          if (keepAliveTimer < millis()){
+            keepAliveTimer = millis() + keepAliveIntervall * 1000; // set new timer value
             transmit = true;
           }
         #endif
