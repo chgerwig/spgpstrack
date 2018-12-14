@@ -113,6 +113,7 @@ static const int RXPin = 4, TXPin = 3;
 #ifdef ESP32
   #include <Ticker.h>
   Ticker tickerSampleGPS;
+  Ticker tickerKeepAlive;
   #include <WiFi.h>
 #endif
 
@@ -357,6 +358,7 @@ void setup() {
       ESP_Serial.begin(GPSBaud, SERIAL_8N1, RXPin, TXPin);
       ESP_Serial.setTimeout(2);  
       tickerSampleGPS.attach_ms(500, sampleGPS);
+      //ticker keepAlive ToDo
     #else
       #ifdef SOFT_SERIAL
       // Setup for Software Serial Option
